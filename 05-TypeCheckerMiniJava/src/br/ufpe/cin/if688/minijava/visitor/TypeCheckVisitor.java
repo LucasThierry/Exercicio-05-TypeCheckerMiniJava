@@ -41,7 +41,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	private SymbolTable symbolTable;
 
-	TypeCheckVisitor(SymbolTable st) {
+	public TypeCheckVisitor(SymbolTable st) {
 		symbolTable = st;
 	}
 

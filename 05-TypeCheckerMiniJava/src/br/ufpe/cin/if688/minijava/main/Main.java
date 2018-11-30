@@ -14,7 +14,9 @@ import br.ufpe.cin.if688.minijava.ast.Print;
 import br.ufpe.cin.if688.minijava.ast.Program;
 import br.ufpe.cin.if688.minijava.ast.VarDecl;
 import br.ufpe.cin.if688.minijava.ast.VarDeclList;
+import br.ufpe.cin.if688.minijava.visitor.BuildSymbolTableVisitor;
 import br.ufpe.cin.if688.minijava.visitor.PrettyPrintVisitor;
+import br.ufpe.cin.if688.minijava.visitor.TypeCheckVisitor;
 
 public class Main {
 
@@ -60,10 +62,13 @@ public class Main {
 		cdl.addElement(B);
 		cdl.addElement(C);
 
-		Program p = new Program(main, cdl);
-		
-		PrettyPrintVisitor ppv = new PrettyPrintVisitor();
-		ppv.visit(p);
+		//programa na forma de AST - obter objeto a partir do parser...
+		Program prog = new Program(main, cdl);
+		BuildSymbolTableVisitor stVis = new BuildSymbolTableVisitor();
+		//construindo tabela de símbolos
+		prog.accept(stVis);
+		//fazendo a checagem de tipos
+		prog.accept(new TypeCheckVisitor(stVis.getSymbolTable()));
 	}
 
 }
