@@ -110,9 +110,8 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(VarDecl n) {
-		n.t.accept(this);
 		n.i.accept(this);
-		return null;
+		return n.t.accept(this);
 	}
 
 	// Type t;
@@ -125,7 +124,7 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		currMethod = symbolTable.getMethod(n.i.s, currClass.getId());
 
 
-		n.t.accept(this);
+		Type type = n.t.accept(this);
 		n.i.accept(this);
 		for (int i = 0; i < n.fl.size(); i++) {
 			n.fl.elementAt(i).accept(this);
@@ -136,8 +135,13 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 		for (int i = 0; i < n.sl.size(); i++) {
 			n.sl.elementAt(i).accept(this);
 		}
-		n.e.accept(this);
-		return null;
+		Type eType = n.e.accept(this);
+
+		if(!this.symbolTable.compareTypes(eType, type)) {
+			System.out.println("Tipo da expressão e tipo declarado são diferentes");
+		}
+
+		return type;
 	}
 
 	// Type t;
@@ -149,20 +153,20 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	}
 
 	public Type visit(IntArrayType n) {
-		return null;
+		return n;
 	}
 
 	public Type visit(BooleanType n) {
-		return null;
+		return n;
 	}
 
 	public Type visit(IntegerType n) {
-		return null;
+		return n;
 	}
 
 	// String s;
 	public Type visit(IdentifierType n) {
-		return null;
+		return n;
 	}
 
 	// StatementList sl;
@@ -176,17 +180,29 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Exp e;
 	// Statement s1,s2;
 	public Type visit(If n) {
-		n.e.accept(this);
+		Type eType = n.e.accept(this);
+
+		if(!this.symbolTable.compareTypes(eType, new BooleanType())) {
+			System.out.println("Condição não é um booleano");
+		}
+
 		n.s1.accept(this);
 		n.s2.accept(this);
+
 		return null;
 	}
 
 	// Exp e;
 	// Statement s;
 	public Type visit(While n) {
-		n.e.accept(this);
+		Type eType = n.e.accept(this);
+
+		if(!this.symbolTable.compareTypes(eType, new BooleanType())) {
+			System.out.println("Condição não é um booleano");
+		}
+
 		n.s.accept(this);
+
 		return null;
 	}
 
@@ -199,15 +215,28 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Identifier i;
 	// Exp e;
 	public Type visit(Assign n) {
+		Type eType = n.e.accept(this);
+		Type decType = symbolTable.getVarType(currMethod,currClass,n.i.s);
+
+		if(!this.symbolTable.compareTypes(eType, decType)) {
+			System.out.println("Atribuição com variaveis de tipos diferentes");
+		}
+
 		n.i.accept(this);
-		n.e.accept(this);
+
 		return null;
 	}
 
 	// Identifier i;
 	// Exp e1,e2;
 	public Type visit(ArrayAssign n) {
-		n.i.accept(this);
+		Type varType = n.i.accept(this);
+		Type decVarType = symbolTable.getVarType(currMethod,currClass,n.i.s);
+
+		if(!this.symbolTable.compareTypes(varType, decVarType)) {
+			System.out.println("Atribuição com variaveis de tipos diferentes");
+		}
+
 		n.e1.accept(this);
 		n.e2.accept(this);
 		return null;
@@ -215,50 +244,119 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e1,e2;
 	public Type visit(And n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!this.symbolTable.compareTypes(e1Type, new BooleanType())){
+			if (!this.symbolTable.compareTypes(e2Type, new BooleanType())){
+				System.out.println("As duas expressões da operação AND não são booleanos");
+				} else {
+				System.out.println("Expressão esquerda da operação AND não é um booleano");
+				}
+			} else if(!this.symbolTable.compareTypes(e2Type, new BooleanType())){
+				System.out.println("Expressão direita da operação AND não é um booleano");
+			}
+
+		return new BooleanType();
 	}
 
 	// Exp e1,e2;
 	public Type visit(LessThan n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!this.symbolTable.compareTypes(e1Type, new IntegerType())){
+			if (!this.symbolTable.compareTypes(e2Type, new IntegerType())){
+				System.out.println("As duas expressões da operação < não são inteiros");
+			} else {
+				System.out.println("Expressão esquerda da operação < não é um inteiro");
+			}
+		} else if(!this.symbolTable.compareTypes(e2Type, new BooleanType())){
+			System.out.println("Expressão direita da operação < não é um inteiro");
+		}
+
+		return new BooleanType();
 	}
 
 	// Exp e1,e2;
 	public Type visit(Plus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!this.symbolTable.compareTypes(e1Type, new IntegerType())){
+			if (!this.symbolTable.compareTypes(e2Type, new IntegerType())){
+				System.out.println("As duas expressões da operação + não são inteiros");
+			} else {
+				System.out.println("Expressão esquerda da operação + não é um inteiro");
+			}
+		} else if(!this.symbolTable.compareTypes(e2Type, new BooleanType())){
+			System.out.println("Expressão direita da operação + não é um inteiro");
+		}
+
+		return new IntegerType();
 	}
 
 	// Exp e1,e2;
 	public Type visit(Minus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!this.symbolTable.compareTypes(e1Type, new IntegerType())){
+			if (!this.symbolTable.compareTypes(e2Type, new IntegerType())){
+				System.out.println("As duas expressões da operação - não são inteiros");
+			} else {
+				System.out.println("Expressão esquerda da operação - não é um inteiro");
+			}
+		} else if(!this.symbolTable.compareTypes(e2Type, new BooleanType())){
+			System.out.println("Expressão direita da operação - não é um inteiro");
+		}
+
+		return new IntegerType();
 	}
 
 	// Exp e1,e2;
 	public Type visit(Times n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!this.symbolTable.compareTypes(e1Type, new IntegerType())){
+			if (!this.symbolTable.compareTypes(e2Type, new IntegerType())){
+				System.out.println("As duas expressões da operação * não são inteiros");
+			} else {
+				System.out.println("Expressão esquerda da operação * não é um inteiro");
+			}
+		} else if(!this.symbolTable.compareTypes(e2Type, new BooleanType())){
+			System.out.println("Expressão direita da operação * não é um inteiro");
+		}
+
+		return new IntegerType();
 	}
 
 	// Exp e1,e2;
 	public Type visit(ArrayLookup n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1Type = n.e1.accept(this);
+		Type e2Type = n.e2.accept(this);
+
+		if(!this.symbolTable.compareTypes(e1Type, new IntArrayType())){
+				System.out.println("A expressão não é um array de inteiros");
+		}
+
+		if(!this.symbolTable.compareTypes(e1Type, new IntegerType())){
+			System.out.println("O índice do array não é um inteiro");
+		}
+
+		return new IntegerType();
 	}
 
 	// Exp e;
 	public Type visit(ArrayLength n) {
-		n.e.accept(this);
-		return null;
+		Type eType = n.e.accept(this);
+
+		if(!this.symbolTable.compareTypes(eType, new IntArrayType())){
+			System.out.println("A expressão não é um array de inteiros");
+		}
+
+		return new IntegerType();
 	}
 
 	// Exp e;
@@ -275,15 +373,15 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// int i;
 	public Type visit(IntegerLiteral n) {
-		return null;
+		return new IntegerType();
 	}
 
 	public Type visit(True n) {
-		return null;
+		return new BooleanType();
 	}
 
 	public Type visit(False n) {
-		return null;
+		return new BooleanType();
 	}
 
 	// String s;
@@ -297,13 +395,18 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// Exp e;
 	public Type visit(NewArray n) {
-		n.e.accept(this);
-		return null;
+		Type eType = n.e.accept(this);
+
+		if(!this.symbolTable.compareTypes(eType, new IntegerType())){
+			System.out.println("O índice do array não é um inteiro");
+		}
+
+		return new IntArrayType();
 	}
 
 	// Identifier i;
 	public Type visit(NewObject n) {
-		return null;
+		return n.i.accept(this);
 	}
 
 	// Exp e;
