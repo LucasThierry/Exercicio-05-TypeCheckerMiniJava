@@ -147,9 +147,9 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 	// Type t;
 	// Identifier i;
 	public Type visit(Formal n) {
-		n.t.accept(this);
+		Type type = n.t.accept(this);
 		n.i.accept(this);
-		return null;
+		return type;
 	}
 
 	public Type visit(IntArrayType n) {
@@ -386,11 +386,12 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(IdentifierExp n) {
-		return null;
+		Type type = symbolTable.getVarType(this.currMethod, this.currClass, n.s);
+		return type;
 	}
 
 	public Type visit(This n) {
-		return null;
+		return currClass.type();
 	}
 
 	// Exp e;
@@ -417,6 +418,22 @@ public class TypeCheckVisitor implements IVisitor<Type> {
 
 	// String s;
 	public Type visit(Identifier n) {
-		return null;
+		if(currClass.containsVar(n.s)) {
+			return symbolTable.getVarType(currMethod, currClass, n.s);
+		}
+
+		if(currClass.containsMethod(n.s)) {
+			return symbolTable.getMethodType(n.s, currClass.getId());
+		}
+
+		if(currMethod.containsVar(n.s)) {
+			return currMethod.getVar(n.s).type();
+		}
+
+		if(currMethod.containsParam(n.s)) {
+			return currMethod.getParam(n.s).type();
+		}
+		
+		return this.symbolTable.getClass(n.s).type();
 	}
 }
