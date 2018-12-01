@@ -47,7 +47,7 @@
         <entry file="file://$PROJECT_DIR$/src/br/ufpe/cin/if688/minijava/visitor/TypeCheckVisitor.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="493">
-              <caret line="405" lean-forward="true" selection-start-line="405" selection-end-line="405" />
+              <caret line="405" selection-start-line="405" selection-end-line="405" />
               <folding>
                 <element signature="e#9650#9651#0" expanded="true" />
                 <element signature="e#9668#9669#0" expanded="true" />
@@ -89,7 +89,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
@@ -144,7 +144,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543626298635" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543626636309" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -191,12 +191,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1543613094564</updated>
-      <workItem from="1543613097205" duration="10343000" />
+      <workItem from="1543613097205" duration="10642000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10343000" />
+    <option name="totallyTimeSpent" value="10642000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -310,7 +310,7 @@
     <entry file="file://$PROJECT_DIR$/src/br/ufpe/cin/if688/minijava/visitor/TypeCheckVisitor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
-          <caret line="405" lean-forward="true" selection-start-line="405" selection-end-line="405" />
+          <caret line="405" selection-start-line="405" selection-end-line="405" />
           <folding>
             <element signature="e#9650#9651#0" expanded="true" />
             <element signature="e#9668#9669#0" expanded="true" />
